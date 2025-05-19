@@ -8,19 +8,20 @@ Customer Lifetime Value (CLV) is estimated using:
 - Customer account age (in months)
 - Assumed platform profit: 0.1% of each transaction
 
-Formula:
-    CLV = (Avg Monthly Transactions × 12) × Avg Profit per Transaction
+Assumption: CLV = (total_transactions / tenure) * 12 * avg_profit_per_transaction
+   i.e  CLV = (Avg Monthly Transactions × 12) × Avg Profit per Transaction
 */
 
+-- SQL SCRIPT IMPLEMENTATION
 SELECT 
     u.id AS customer_id,
-    CONCAT(u.first_name, ' ', u.last_name) AS full_name,
+    CONCAT(u.first_name, ' ', u.last_name) AS name,
 
     -- Account age in months
-    TIMESTAMPDIFF(MONTH, u.date_joined, CURRENT_DATE) AS account_tenure_months,
+    TIMESTAMPDIFF(MONTH, u.date_joined, CURRENT_DATE) AS tenure_months,
 
     -- Count of all successful transactions
-    COUNT(s.id) AS total_successful_transactions,
+    COUNT(s.id) AS total_transactions,
 
     -- Estimated CLV (rounded to 2 decimal places)
     ROUND(
@@ -46,8 +47,8 @@ GROUP BY
 
 -- Ensure valid tenure and actual transactions
 HAVING 
-    account_tenure_months > 0
-    AND total_successful_transactions > 0
+    tenure_months > 0
+    AND total_transactions > 0
 
 ORDER BY 
     estimated_clv DESC;
