@@ -2,7 +2,7 @@
 
 ## 🧾 Introduction
 
-This repository contains a series of SQL-based analytical queries that demonstrate real-world problem-solving using **MySQL**. Each solution reflects practical expertise in joining, filtering, aggregating, and analyzing structured data to uncover business insights.
+This repository contains a series of SQL-based analytical queries that demonstrate real-world problem-solving using **MySQL**. Each solution reflects my practical expertise in joining, filtering, aggregating, and analyzing structured data to uncover business insights.
 
 ---
 
@@ -108,6 +108,6 @@ Estimate long-term customer value based on tenure and financial contributions.
 
 ## ✨ Conclusion
 
-This assessment reflects the ability to translate business questions into efficient SQL solutions. From customer segmentation to CLV modeling, each query was designed with performance, clarity, and impact in mind.
+This assessment reflects my ability to translate business questions into efficient SQL solutions. From customer segmentation to CLV modeling, each query was designed with performance, clarity, and impact in mind.
 
 ---
