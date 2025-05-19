@@ -18,7 +18,7 @@ The expected output will includes:
 */
 
 
--- SQL SCRIPT:
+-- SQL SCRIPT IMPLEMENTATION:
 -- Select the user's unique ID and Concatenate first and last names
 SELECT 
     u.id AS owner_id,
