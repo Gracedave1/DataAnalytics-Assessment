@@ -29,7 +29,7 @@ SELECT
     COUNT(CASE WHEN p.is_regular_savings = 1 THEN 1 END) AS savings_count,
 
     -- Count the number of funded investment plans where is_a_fund = 1 (i.e the user has an investment-type plan)
-    -- Sum up all confirmed deposits made by the user, divide by 100 to convert from kobo to Naira rounded to 2 decimal
+    -- Sum up all confirmed deposits made by the user, divide by 100 (kobo to Naira rounded to 2 decimal places)
     COUNT(CASE WHEN p.is_a_fund = 1 THEN 1 END) AS investment_count,
     ROUND(SUM(s.confirmed_amount) / 100.0, 2) AS total_deposits
 FROM savings_savingsaccount s
