@@ -14,7 +14,7 @@ For each inactive plan, it provides:
 - Number of days since last transaction
 */
 
--- SQL SCRIPT : 
+-- SQL SCRIPT IMPLEMENTATION: 
     SELECT 
     p.id AS plan_id,
     p.owner_id,
