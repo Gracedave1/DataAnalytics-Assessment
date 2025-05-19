@@ -4,12 +4,12 @@
 
 /*
 TASK OVERVIEW: 
-This query will returns a list of users who have:
+This query returns a list of users who have:
 1. At least one regular savings plan (is_regular_savings = 1)
 2. At least one investment fund (is_a_fund = 1)
 3. Confirmed deposit transactions (transaction_status = 'success')
 
-The expected output will includes:
+The expected output includes:
 - User ID
 - Full name
 - Count of funded savings plans
@@ -24,26 +24,24 @@ SELECT
     u.id AS owner_id,
     CONCAT(u.first_name, ' ', u.last_name) AS name,
     
-    -- Count distinct savings plans where is_regular_savings = 1 (i.e the user has a savings-type plan) 
-    -- and rename as savings_count
+    -- Count distinct savings plans and rename as savings_count
     COUNT(CASE WHEN p.is_regular_savings = 1 THEN 1 END) AS savings_count,
 
-    -- Count the number of funded investment plans where is_a_fund = 1 (i.e the user has an investment-type plan)
-    -- Sum up all confirmed deposits made by the user, divide by 100 (kobo to Naira rounded to 2 decimal places)
+    -- count of funded investment plans, and total confirmed deposits (rounded to 2 decimal places)
     COUNT(CASE WHEN p.is_a_fund = 1 THEN 1 END) AS investment_count,
     ROUND(SUM(s.confirmed_amount) / 100.0, 2) AS total_deposits
     
 FROM savings_savingsaccount s
 
-    -- Joining the plans table to link each savings account to its plan & users table to retrieve user information
+    -- Join with plans and users to get plan type and user details 
 JOIN plans_plan p ON s.plan_id = p.id
 JOIN users_customuser u ON s.owner_id = u.id
     
-    -- filtering out only savings records that have confirmed deposits (inflow) & group results by user
+    -- Filtering out only records with confirmed deposits & group results by user
 WHERE s.confirmed_amount > 0
 GROUP BY u.id, u.first_name, u.last_name 
 
-    -- Filter to include only users with at least one savings and one investment plan. 
+    -- Filter to include users with at least one savings and one investment plan 
     -- Sort by total deposits in descending order
 HAVING 
     COUNT(CASE WHEN p.is_regular_savings = 1 THEN 1 END) > 0 AND
