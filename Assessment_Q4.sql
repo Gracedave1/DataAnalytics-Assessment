@@ -1,5 +1,5 @@
 -- Assessment_Q4.sql
--- TASK: Estimate Customer Lifetime Value (CLV) based on historical activity
+-- TASK: Estimate Customer Lifetime Value (CLV) based on account tenure and transaction volume
 
 /*
 TASK OVERVIEW: 
@@ -38,9 +38,10 @@ LEFT JOIN savings_savingsaccount AS s
     ON u.id = s.owner_id 
     AND s.transaction_status = 'success'
 
+ -- Only include active users and exclude deleted accounts
 WHERE 
-    u.is_active = 1            -- Only include active users
-    AND u.is_account_deleted = 0  -- Exclude deleted accounts
+    u.is_active = 1            
+    AND u.is_account_deleted = 0  
 
 GROUP BY 
     u.id, u.first_name, u.last_name, u.date_joined
