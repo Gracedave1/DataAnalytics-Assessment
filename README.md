@@ -2,112 +2,92 @@
 
 ## 🧾 Introduction
 
-This repository contains a series of SQL-based analytical queries that demonstrate real-world problem-solving using **MySQL**. Each solution reflects my practical expertise in joining, filtering, aggregating, and analyzing structured data to uncover business insights.
+This repository contains my solutions to a **SQL Proficiency Assessment** completed using **MySQL**. Each question is based on real-world business scenarios designed to test practical SQL skills.
+
+For every task, I clearly outline:
+- What the problem is,  
+- The challenges I faced,  
+- And the SQL approach I used to address it
+
+The goal is to demonstrate my ability to write efficient, accurate queries while thinking critically about data in a business context.
 
 ---
 
-## ❓ Problem Summaries & Solutions
+## ❓ Question Summaries
 
-<details>
-<summary><strong>1. 🏦 Identifying High-Value Customers with Diverse Financial Products</strong></summary>
+### 1. 🏦 High-Value Customers with Multiple Products
 
-**🔍 Objective**  
-Identify users who own both savings and investment products, and evaluate their total deposits.
+**Problem:**  
+Find users who have **both savings and investment plans**, and calculate and sort the **total amount** they’ve deposited.
 
-**🛠️ Strategy**
-- Used `COUNT(DISTINCT CASE WHEN ...)` for separate counts of savings vs. investment plans.
-- Aggregated `confirmed_amount` (converted from kobo to naira).
-- Filtered to include only active, non-deleted plans with successful transactions.
-- Applied `LEFT JOIN` to capture plans with or without transaction records.
+**Challenges:**  
+- Avoid **double-counting** plans when users had multiple types.  
+- Include users who had **no transaction records** yet.  
+- Dealing with **amounts stored in kobo**, not naira.
 
-**⚠️ Challenges Addressed**
-- Switched from simple count to conditional aggregation for accuracy.
-- Prevented overcounting by using `DISTINCT` on plan IDs.
-- Ensured currency consistency with unit conversion logic.
-
-</details>
+**Approach Taken:**  
+- Applied `DISTINCT` and conditional aggregation to ensure accuracy by using `COUNT(DISTINCT CASE WHEN ...)` to separately count savings and investment products.
+- Performed a `LEFT JOIN` so users without transactions were still included.  
+- Aggregated `confirmed_amount` and converted from **kobo to naira**.  
+- Filtered only **active** and **non-deleted** plans with **successful transactions**.
 
 ---
 
-<details>
-<summary><strong>2. 📈 Transaction Frequency Banding</strong></summary>
+### 2. 📈 Transaction Frequency Analysis - Grouping Customers by Transaction Frequency
 
-**🔍 Objective**  
-Group customers into tiers (Low, Medium, High) based on average monthly transaction activity over the past year.
+**Problem:**  
+Group users into **Low**, **Medium**, or **High** frequency based on their **average monthly transaction activity** over the last 12 months.
 
-**🛠️ Strategy**
-- Used a CTE to calculate total successful transactions and active months per user.
-- Limited to the **last 12 months** for recency.
-- Computed average monthly transactions and applied thresholds for frequency tiers.
-- Grouped by month using `DATE_FORMAT` for year-month accuracy.
+**Challenges:**  
+- The need to **avoid dividing by zero** when users had no transactions.  
+- Original logic was hard to follow with many subqueries.  
+- Some users had **multiple transactions in the same month**.
 
-**⚠️ Challenges Addressed**
-- Replaced subqueries with a cleaner CTE structure.
-- Introduced `GREATEST(..., 1)` to avoid divide-by-zero for new users.
-- Accounted for multiple transactions within the same month.
-
-</details>
+**Approach Taken:**  
+- Created a **CTE** (Common Table Expression) to simplify calculations.  
+- Used `GREATEST(..., 1)` to ensure no division by zero.  
+- Aggregated monthly transactions and calculated an average.  
+- Used **thresholds** to assign users to frequency bands.
 
 ---
 
-<details>
-<summary><strong>3. ⏸️ Detecting Inactive Accounts</strong></summary>
+### 3. ⏸️ Detecting Inactive Accounts
 
-**🔍 Objective**  
-Highlight active savings or investment accounts with no transaction in the past 365 days.
+**Problem:**  
+Find active savings or investment accounts that haven’t had **any successful transaction in the last 365 days**.
 
-**🛠️ Strategy**
-- Filtered for active (`status_id = 1`) and undeleted plans.
-- Used `LEFT JOIN` to connect plans with successful transactions.
-- Calculated last transaction date using `MAX(...)` and days since last activity via `DATEDIFF`.
-- Applied `HAVING` to detect accounts with NULL or old transactions.
+**Challenges:**  
+- Initially missed accounts with **zero transactions**.  
+- Needed to follow the rule: account must be **active** and **not deleted**.  
+- Had to compare **last transaction date** to today’s date.
 
-**⚠️ Challenges Addressed**
-- Initially excluded accounts with no transactions—corrected with `HAVING last_transaction_date IS NULL`.
-- Ensured alignment with business rules for “active accounts”.
-
-</details>
+**Approach Taken:**  
+- Used a `LEFT JOIN` to include accounts with no transactions.  
+- Calculated the **last transaction date** using `MAX(...)`.  
+- Used `DATEDIFF` to check if it's been more than **365 days**.  
+- Used `HAVING` to catch both **old transactions** and **nulls** (no transactions at all).
 
 ---
 
-<details>
-<summary><strong>4. 💰 Estimating Customer Lifetime Value (CLV)</strong></summary>
+### 4. 💰 Estimating Customer Lifetime Value (CLV)
 
-**🔍 Objective**  
-Estimate long-term customer value based on tenure and financial contributions.
+**Problem:**  
+Estimate the **lifetime value** of each customer based on how long they’ve had an account and how much they’ve deposited.
 
-**🛠️ Strategy**
-- Measured account age in months using `TIMESTAMPDIFF`.
-- Counted successful transactions and summed confirmed amounts.
-- Applied this CLV formula:  
-  `(Transactions / Tenure Months) × 12 × (0.1% of Total Amount)`
-- Rounded and formatted for presentation.
+**Challenges:**  
+- Had to calculate **account age** in months.  
+- Some users had **no transactions**, causing `NULL` errors.  
+- Needed to **avoid divide-by-zero** for very new accounts.
 
-**⚠️ Challenges Addressed**
-- Fixed early syntax issues with date functions.
-- Used `GREATEST(..., 1)` to avoid division errors.
-- Handled null transaction values using `COALESCE`.
-
-</details>
-
----
-
-## ⚙️ Technical Highlights
-
-### ✅ Performance Optimization
-- Proper use of `INNER JOIN` and `LEFT JOIN` with ON clauses.
-- Index-friendly filtering on fields like `transaction_status`.
-- Reduced data scope where applicable (e.g., using 12-month windows).
-
-### ✅ Data Quality Assurance
-- Safeguarded calculations with `GREATEST` and `COALESCE`.
-- Ensured accurate plan counting using `DISTINCT` and conditional logic.
-- Validated logic against domain-specific business rules.
+**Approach Taken:**  
+- Measured tenure using `TIMESTAMPDIFF` (in months).  
+- Summed total transactions and amounts using `COALESCE` to handle nulls.  
+- Applied a custom CLV formula:  
+  `(Transactions ÷ Months) × 12 × (0.001 × Total Amount)`  
+- Used `GREATEST(..., 1)` to prevent division by zero.
 
 ---
 
 ## ✨ Conclusion
 
-This assessment reflects my ability to translate business questions into efficient SQL solutions. From customer segmentation to CLV modeling, each query was designed with performance, clarity, and impact in mind.
-
----
+Each solution in this assessment started with a business problem and ended with a clear, efficient SQL query. I prioritized **clarity**, **accuracy**, and **performance**, while also addressing any data quirks or edge cases I encountered.
