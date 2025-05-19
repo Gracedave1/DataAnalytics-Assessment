@@ -32,6 +32,7 @@ SELECT
     -- Sum up all confirmed deposits made by the user, divide by 100 (kobo to Naira rounded to 2 decimal places)
     COUNT(CASE WHEN p.is_a_fund = 1 THEN 1 END) AS investment_count,
     ROUND(SUM(s.confirmed_amount) / 100.0, 2) AS total_deposits
+    
 FROM savings_savingsaccount s
 
     -- Joining the plans table to link each savings account to its plan & users table to retrieve user information
