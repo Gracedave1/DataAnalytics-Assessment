@@ -15,7 +15,7 @@ Categories:
 - Low Frequency: < 3 transactions/month
 */
 
--- SQL SCRIPT:
+-- SQL SCRIPT IMPLEMENTATION:
 -- Step 1: Prepare monthly activity statistics per customer using a CTE
 WITH monthly_activity_stats AS (
     SELECT 
