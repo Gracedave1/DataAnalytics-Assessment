@@ -3,7 +3,7 @@
 
 /*
 TASK OVERVIEW:
-This query evaluates customer engagement by:
+This query will evaluates customer engagement by:
 1. Calculating the number of successful transactions and the number of active months 
    (months with at least one transaction) over the past 12 months.
 2. Categorizing each customer into frequency bands based on their average transactions per month.
@@ -15,6 +15,7 @@ Categories:
 - Low Frequency: < 3 transactions/month
 */
 
+-- SQL SCRIPT:
 -- Step 1: Prepare monthly activity statistics per customer using a CTE
 WITH monthly_activity_stats AS (
     SELECT 
@@ -40,20 +41,20 @@ SELECT
         WHEN total_transactions / active_months >= 10 THEN 'High Frequency'
         WHEN total_transactions / active_months >= 3 THEN 'Medium Frequency'
         ELSE 'Low Frequency'
-    END AS transaction_band,
+    END AS frequency_category,
 
     -- Count of customers in each frequency band
-    COUNT(owner_id) AS number_of_customers,
+    COUNT(owner_id) AS customer_count,
 
     -- Average monthly transaction frequency per band
-    ROUND(AVG(total_transactions / active_months), 1) AS avg_monthly_transactions
+    ROUND(AVG(total_transactions / active_months), 1) AS avg_transactions_per_month
 
 FROM monthly_activity_stats
 
-GROUP BY transaction_band
+GROUP BY frequency_category
 
 -- Ensure custom ordering of frequency bands
-ORDER BY CASE transaction_band
+ORDER BY CASE frequency_category
     WHEN 'High Frequency' THEN 1
     WHEN 'Medium Frequency' THEN 2
     ELSE 3
