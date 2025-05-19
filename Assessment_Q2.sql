@@ -16,7 +16,7 @@ Categories:
 */
 
 -- SQL SCRIPT IMPLEMENTATION:
--- Step 1: Prepare monthly activity statistics per customer using a CTE
+-- Step 1: Preparing monthly activity statistics per customer using a CTE (Common Table Expression) to simplify calculations.
 WITH monthly_activity_stats AS (
     SELECT 
         s.owner_id,
@@ -34,7 +34,7 @@ WITH monthly_activity_stats AS (
     HAVING active_months > 0
 )
 
--- Step 2: Categorize customers by average monthly transaction frequency
+-- Step 2: Categorizing customers by average monthly transaction frequency
 SELECT 
     -- Assign a frequency category based on transaction rate per month
     CASE 
