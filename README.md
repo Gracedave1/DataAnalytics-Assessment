@@ -90,4 +90,4 @@ Estimate the **lifetime value** of each customer based on how long they’ve had
 
 ## ✨ Conclusion
 
-Each solution in this assessment started with a business problem and ended with a clear, efficient SQL query. I prioritized **clarity**, **accuracy**, and **performance**, while also addressing any data quirks or edge cases I encountered.
+Each solution in this assessment started with a business problem and ended with a clear, well-structured SQL query. I focused on making the queries easy to **understand**, **accurate**, and **efficient**, while also handling any tricky data situations or edge cases along the way.
