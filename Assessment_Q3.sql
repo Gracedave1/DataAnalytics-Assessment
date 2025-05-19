@@ -14,7 +14,8 @@ For each inactive plan, it provides:
 - Number of days since last transaction
 */
 
-SELECT 
+-- SQL SCRIPT : 
+    SELECT 
     p.id AS plan_id,
     p.owner_id,
 
@@ -23,13 +24,13 @@ SELECT
         WHEN p.is_regular_savings = 1 THEN 'Savings'
         WHEN p.is_a_fund = 1 THEN 'Investment'
         ELSE 'Other'
-    END AS plan_type,
+    END AS type,
 
     -- Latest successful transaction date (can be NULL if none)
-    MAX(s.transaction_date) AS last_successful_transaction,
+    MAX(s.transaction_date) AS last_transaction_date,
 
     -- Number of days since the last transaction (NULL-safe)
-    DATEDIFF(CURRENT_DATE, MAX(s.transaction_date)) AS days_inactive
+    DATEDIFF(CURRENT_DATE, MAX(s.transaction_date)) AS inactive_days
 
 FROM plans_plan AS p
 
@@ -47,8 +48,8 @@ GROUP BY
 
 -- Filter to plans with no transactions or inactive for over 365 days
 HAVING 
-    last_successful_transaction IS NULL 
-    OR days_inactive > 365
+    last_transaction_date IS NULL 
+    OR inactive_days > 365
 
 ORDER BY 
-    days_inactive DESC;
+    inactive_days DESC;
